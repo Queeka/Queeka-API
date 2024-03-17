@@ -2,9 +2,9 @@ name: Queeka Staging Action
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "staging" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "staging" ]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: "project/"
+        working-directory: "Queeka-API/project/"
 
     steps:
     - uses: actions/checkout@v3
