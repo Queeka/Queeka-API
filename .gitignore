@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+*note.txt
+# DB extensions
+*.env.staging
+*.env.test
+
 # Distribution / packaging
 .Python
 build/
