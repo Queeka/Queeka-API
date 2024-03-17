@@ -1,4 +1,4 @@
-name: Queeka Staging Action
+name: Queeka Test Action
 
 on:
   push:
@@ -32,4 +32,4 @@ jobs:
     
     - name: Run Tests
       run: |
-        python manage.py test --settings=settings.staging
+        python manage.py test --settings=setup.settings.test_settings
