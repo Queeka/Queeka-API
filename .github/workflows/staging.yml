@@ -1,10 +1,10 @@
-name: Queeka Test Action
+name: Queeka Staging Action
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "staging" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "staging" ]
 
 jobs:
   build:
@@ -29,7 +29,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
     - name: Run Tests
       run: |
-        python manage.py test --settings=setup.settings.test_settings
+        python manage.py test --settings=setup.settings.staging
