@@ -1,0 +1,5 @@
+Test Environment
+python manage.py makemigrations --settings=setup.settings.test_settings
+
+Staging Environment
+python manage.py makemigrations --settings=setup.settings.staging
