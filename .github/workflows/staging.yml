@@ -17,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: "Queeka-API/project/"
+        working-directory: "project/"
 
     steps:
     - uses: actions/checkout@v3
