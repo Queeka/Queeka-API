@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+# from rest_framework_simplejwt.views import TokenObtainPairView
 from . import (
     # Models
     User, 
@@ -9,6 +10,7 @@ from . import (
     QueekaBusinessSerializer
     )
 
+from rest_framework import permissions
 
 class SignUpUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

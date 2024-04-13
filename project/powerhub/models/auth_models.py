@@ -44,7 +44,25 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if self.password:
             self.set_password(self.password)
-        super().save(*args, **kwargs)
+        if not self.username:
+            random_username = "".join(random.choices(string.ascii_lowercase + string.digits, k=5))
+            self.username=random_username
+        super(User, self).save(*args, **kwargs)
+
+
+
+# Define ConfirmationCode model
+class ConfirmationCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    generated_confirmation_code = models.IntegerField(unique=True)
+    verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.first_name
+
+    @classmethod
+    def generate_confirmation_code(cls):
+        return "".join(random.choices(string.digits, k=4))
 
 
 class QueekaBusiness(models.Model):
