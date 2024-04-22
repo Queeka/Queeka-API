@@ -12,7 +12,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 
-router.register("signup/client", SignUpUserViewSet, basename='sign-up-client')
+router.register("signup/client", SignUpUserViewSet, basename='sign_up_client')
 router.register("register/business", RegisterBusinessView, basename='queeka-business')
 
 urlpatterns = [

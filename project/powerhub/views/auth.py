@@ -18,5 +18,8 @@ class SignUpUserViewSet(viewsets.ModelViewSet):
 
 
 class RegisterBusinessView(viewsets.ModelViewSet):
+    """
+    Register Business Accounts for Clients
+    """
     queryset= QueekaBusiness.objects.select_related("owner")
     serializer_class = QueekaBusinessSerializer

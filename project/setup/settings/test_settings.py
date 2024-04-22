@@ -23,6 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
+
+# # API Monitoring
+# APITOOLKIT_KEY = env("KIT_KEY")
+# APITOOLKIT_DEBUG = True
+
+# APITOOLKIT_TAGS = ["TEST"]
+# APITTOLKIT_SERVICE_VERSION = "1.0.0"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -39,7 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'powerhub',
-    'rest_framework'
+    'rest_framework',
+    "cloudinary_storage",
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'apitoolkit_django.APIToolkit',
 ]
 
 ROOT_URLCONF = 'setup.urls'
@@ -85,6 +96,15 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+# STORAGES = {
+#     "media": {
+#         "BACKEND": "storages.backends.cloudinary.MediaCloudinaryStorage",
+#     }
+# }
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -128,3 +148,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "powerhub.User"
+
+CLOUDINARY_STORAGE = {
+    "CLOUDINARY_URL": env("CLOUDINARY_URL")
+}
+
+# TEST_RUNNER = 'setup.runner.CustomTestRunner'

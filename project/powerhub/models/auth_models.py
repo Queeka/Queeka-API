@@ -35,6 +35,7 @@ class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
     password = models.CharField(max_length=128)
     contact = models.CharField(max_length=15, unique=True)
+    profile_image = models.ImageField(null=True)
     
     USERNAME_FIELD = 'contact'
     REQUIRED_FIELDS = []
@@ -44,6 +45,9 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if self.password:
             self.set_password(self.password)
+        if not self.contact:
+            random_digit = "".join(random.choices(string.digits, k=5))
+            self.contact = random_digit
         if not self.username:
             random_username = "".join(random.choices(string.ascii_lowercase + string.digits, k=5))
             self.username=random_username
