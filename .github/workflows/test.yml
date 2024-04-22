@@ -38,7 +38,7 @@ jobs:
       run: echo "CLOUDINARY_URL=${{ secrets.CLOUDINARY_URL }}" >> $GITHUB_ENV
 
     - name: Whatsapp
-      run: echo "CLOUDINARY_URL=${{ secrets.ACCOUNT_SID }}" >> $GITHUB_ENV
+      run: echo "ACCOUNT_SID=${{ secrets.ACCOUNT_SID }}" >> $GITHUB_ENV
 
     - name: Shussh!
       run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
