@@ -7,4 +7,3 @@ class QueekaBusinessTest(APITestCase):
         url = 'queeka/register/business/'
         
         pass
-        # data = {'owner': }
