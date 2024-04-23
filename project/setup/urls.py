@@ -2,6 +2,11 @@ from powerhub.views.auth import (
     SignUpUserViewSet, 
     RegisterBusinessView
 )
+
+from powerhub.views.orders import (
+    OrderView,
+    PackageView
+)
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -14,6 +19,9 @@ router = routers.DefaultRouter()
 
 router.register("signup/client", SignUpUserViewSet, basename='sign_up_client')
 router.register("register/business", RegisterBusinessView, basename='queeka-business')
+router.register("create-package", PackageView, basename='order-package')
+router.register("create-order", OrderView, basename='order')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

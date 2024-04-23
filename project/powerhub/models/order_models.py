@@ -27,13 +27,14 @@ class Package(models.Model):
     quantity = models.PositiveIntegerField()
     type = models.CharField(max_length=3, choices=PACKAGE_TYPE)
     weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    size = models.PositiveIntegerField()
+    size = models.CharField(max_length=10)
     address = models.CharField(max_length=300)
     recipient_contact = models.CharField(max_length=15)
     
     def save(self, *args, **kwargs):
-        if self.serial_no is None:
-            self.serial_no = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        if not self.serial_no:
+            generated_serial_no = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            self.serial_no = generated_serial_no
         super(Package, self).save(*args, **kwargs)
 
 
@@ -63,6 +64,6 @@ class Order(models.Model):
     message = models.TextField()
     
     def save(self, *args, **kwargs):
-        if self.order_sn is None:
+        if not self.order_sn:
             self.order_sn = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
         super(Order, self).save(*args, **kwargs)
