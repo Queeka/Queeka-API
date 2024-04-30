@@ -34,7 +34,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["queeka-api-production.up.railway.app"]
+ALLOWED_HOSTS = ["queeka-api-production.up.railway.app", "127.0.0.1"]
 
 
 # Application definition
@@ -154,3 +154,6 @@ CLOUDINARY_STORAGE = {
 }
 
 # TEST_RUNNER = 'setup.runner.CustomTestRunner'
+
+ACCOUNT_SID = env("ACCOUNT_SID")
+AUTH_TOKEN = env("AUTH_TOKEN")

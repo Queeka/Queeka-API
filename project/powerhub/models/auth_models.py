@@ -14,17 +14,17 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-def create_superuser(self, email, password=None, **extra_fields):
-    # Create a superuser
-    extra_fields.setdefault('is_staff', True)
-    extra_fields.setdefault('is_superuser', True)
+    def create_superuser(self, contact, password=None, **extra_fields):
+        # Create a superuser
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
 
-    if extra_fields.get('is_staff') is not True:
-        raise ValueError('Superuser must have is_staff=True.')
-    if extra_fields.get('is_superuser') is not True:
-        raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
 
-    return self.create_user(email, password, **extra_fields)
+        return self.create_user(contact, password, **extra_fields)
 
 
 class User(AbstractUser):
@@ -64,9 +64,14 @@ class ConfirmationCode(models.Model):
     def __str__(self):
         return self.user.first_name
 
-    @classmethod
-    def generate_confirmation_code(cls):
-        return "".join(random.choices(string.digits, k=4))
+    def generate_confirmation_code(self):
+        # Generate and return a random 6-digit code
+        return ''.join(random.choices(string.digits, k=4))
+
+    def save(self, *args, **kwargs):
+        if not self.generated_confirmation_code:
+            self.generated_confirmation_code = self.generate_confirmation_code()
+        super().save(*args, **kwargs)
 
 
 class QueekaBusiness(models.Model):

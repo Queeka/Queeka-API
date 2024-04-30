@@ -3,16 +3,24 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from rest_framework import response, status
 from twilio.rest import Client
-import logging
-import environ
-import random
-import string
+import environ, os, random, logging, string
+from dotenv import load_dotenv
+from pathlib import Path
+from setup.settings import test_settings
 
-env = environ.Env()
-environ.Env.read_env()
+# # Specify the path to the .env file for staging environment
+# dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'settings/environs/.env.test')
+
+# # Load environment variables from the specified .env file
+# load_dotenv(dotenv_path)
+
+
+# env = environ.Env()
+# environ.Env.read_env()
 
 logger = logging.getLogger(__name__)
 
+# print(env("ACCOUNT_SID"))
 
 # Signal to send OTP via Twilio WhatsApp
 @receiver(post_save, sender=User)
@@ -31,8 +39,11 @@ def send_otp(sender, instance, created, **kwargs):
             # Send OTP message via Twilio
             logger.info("SENDING OTP")
             
-            account_sid = env("ACCOUNT_SID")
-            auth_token = env("AUTH_TOKEN")
+            account_sid = test_settings.ACCOUNT_SID
+            auth_token = test_settings.AUTH_TOKEN
+            
+            # account_sid = 'ACf8de57181d562761a5c83fc0c34437d6'
+            # auth_token = 'b2744e2b3fa9596a0596f80a49723d48'
         
             client = Client(account_sid, auth_token)
             otp_message = f'Hello! {instance.first_name}, Welcome to Queeka. Your OTP is {confirmation_code}'
@@ -42,23 +53,5 @@ def send_otp(sender, instance, created, **kwargs):
                 to=f'whatsapp:{contact}'
             )
         except Exception as e:
-            logger.error(f"There has been an unexpected error sending OTP to {contact} \n Error: {e}", exc_info=True)
-
-
-# Function to verify confirmation code
-def verify_confirmation_code(user, submitted_code):
-    try:
-        confirmation = ConfirmationCode.objects.get(user=user)
-        if confirmation.generated_confirmation_code == submitted_code:
-            confirmation.verified = True
-            confirmation.save()
-            return response.Response("OTP Verified Successfully", status=status.HTTP_202_ACCEPTED)
-            logger.info("OTP Verified")
-        else:
-            return response.Response("Incorrect Confirmation Code")
-
-    except ConfirmationCode.DoesNotExist:
-        return response.Response("Confirmation Code Does Not Exist")
-        logger.error("Confirmation Code Does Not Exist")
-        return False
+            logger.error(f"There has been an unexpected error sending OTP to {contact} using \n {account_sid} and  {auth_token} \n Error: {e}", exc_info=True)
 

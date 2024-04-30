@@ -1,6 +1,7 @@
 from powerhub.views.auth import (
     SignUpUserViewSet, 
-    RegisterBusinessView
+    RegisterBusinessView,
+verify_confirmation_code
 )
 
 from powerhub.views.orders import (
@@ -30,4 +31,5 @@ urlpatterns = [
     # Auth
     path('signin/client', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path("verify/otp", verify_confirmation_code, name="verify")
 ]

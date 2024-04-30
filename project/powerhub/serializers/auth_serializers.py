@@ -9,6 +9,7 @@ class SignUpUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "email", "contact", "password", "profile_image"]
+        extra_kwargs = {"email": {"required": False}}
         
     def validate_password(self, value):
         # Password Security
