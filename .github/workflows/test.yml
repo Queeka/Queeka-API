@@ -39,6 +39,7 @@ jobs:
 
     - name: Whatsapp
       run: echo "ACCOUNT_SID=${{ secrets.ACCOUNT_SID }}" >> $GITHUB_ENV
+      run: echo "AUTH_TOKEN=${{ secrets.AUTH_TOKEN }}" >> $GITHUB_ENV
 
     - name: Shussh!
       run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
