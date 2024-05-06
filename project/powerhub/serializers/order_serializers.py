@@ -1,15 +1,15 @@
 from rest_framework import serializers
-from . import Package, Order, QueekaBusiness
+from . import Package, Shipment, QueekaBusiness
 import logging
 
 logger = logging.getLogger(__name__)
 
-class OrderSerializer(serializers.ModelSerializer):
+class ShipmentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = Shipment
         fields = "__all__"
         extra_kwargs = {"vendor": {"required": False}, 
-                        "order_sn": {"required": False}}
+                        "shipment_sn": {"required": False}}
         
     def create(self, validated_data):
         vendor = self.context['request'].user
@@ -28,7 +28,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return business
     
     def to_representation(self, instance):
-        representation = super(OrderSerializer, self).to_representation(instance)
+        representation = super(ShipmentSerializer, self).to_representation(instance)
         representation['vendor'] = {"business_name": f"{instance.vendor.name}", "vendor": f"{instance.vendor.owner.first_name} {instance.vendor.owner.last_name}"}
         representation['package'] = [{"name": package.name, "size": package.size, "weight": package.weight, "type": package.type, 
                                     "recipient_address": package.address, "recipient_contact": package.recipient_contact} 

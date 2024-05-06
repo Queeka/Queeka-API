@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     "cloudinary_storage",
     'cloudinary',
+    'finance'
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,6 @@ CLOUDINARY_STORAGE = {
 
 ACCOUNT_SID = env("ACCOUNT_SID")
 AUTH_TOKEN = env("AUTH_TOKEN")
+
+
+TEST_SECRET_KEY=env("TEST_SECRET_KEY")

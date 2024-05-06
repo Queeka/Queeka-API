@@ -1,7 +1,7 @@
 from . import (
-    Order,
+    Shipment,
     Package, 
-    OrderSerializer, 
+    ShipmentSerializer, 
     PackageSerializer
     )
 from rest_framework.views import APIView
@@ -14,9 +14,9 @@ class PackageView(viewsets.ModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
 
-class OrderView(viewsets.ModelViewSet):
+class ShipmentView(viewsets.ModelViewSet):
     """
     Viewset for viewing and editing Order Order
     """
-    queryset = Order.objects.select_related("vendor").prefetch_related("package")
-    serializer_class = OrderSerializer
+    queryset = Shipment.objects.select_related("vendor").prefetch_related("package")
+    serializer_class = ShipmentSerializer

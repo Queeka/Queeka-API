@@ -74,6 +74,7 @@ class ConfirmationCode(models.Model):
         super().save(*args, **kwargs)
 
 
+
 class QueekaBusiness(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)

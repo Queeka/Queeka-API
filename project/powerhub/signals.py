@@ -8,19 +8,8 @@ from dotenv import load_dotenv
 from pathlib import Path
 from setup.settings import test_settings
 
-# # Specify the path to the .env file for staging environment
-# dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'settings/environs/.env.test')
-
-# # Load environment variables from the specified .env file
-# load_dotenv(dotenv_path)
-
-
-# env = environ.Env()
-# environ.Env.read_env()
-
 logger = logging.getLogger(__name__)
 
-# print(env("ACCOUNT_SID"))
 
 # Signal to send OTP via Twilio WhatsApp
 @receiver(post_save, sender=User)

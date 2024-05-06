@@ -5,7 +5,7 @@ verify_confirmation_code
 )
 
 from powerhub.views.orders import (
-    OrderView,
+    ShipmentView,
     PackageView
 )
 from rest_framework_simplejwt.views import (
@@ -20,13 +20,15 @@ router = routers.DefaultRouter()
 
 router.register("signup/client", SignUpUserViewSet, basename='sign_up_client')
 router.register("register/business", RegisterBusinessView, basename='queeka-business')
-router.register("create-package", PackageView, basename='order-package')
-router.register("create-order", OrderView, basename='order')
+router.register("create-package", PackageView, basename='shipment-package')
+router.register("create-shipment", ShipmentView, basename='shipment')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('queeka/', include(router.urls)),
+    path('queekas/', include('finance.urls')),
+    
     
     # Auth
     path('signin/client', TokenObtainPairView.as_view(), name='token_obtain_pair'),

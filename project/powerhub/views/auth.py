@@ -24,14 +24,14 @@ class RegisterBusinessView(viewsets.ModelViewSet):
     """
     queryset= QueekaBusiness.objects.select_related("owner")
     serializer_class = QueekaBusinessSerializer
-    
-    
+
+
+
 # Function to verify confirmation code
 @api_view(["POST"])
 def verify_confirmation_code(request, **kwargs):
     submitted_code = request.query_params.get("code")
     user = request.user
-    # print(type(submitted_code))
     try:
         confirmation = ConfirmationCode.objects.get(user=user)
         print("Generated code:", type(confirmation.generated_confirmation_code))  # Add this line for debugging

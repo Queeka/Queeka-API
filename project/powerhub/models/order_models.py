@@ -28,8 +28,7 @@ class Package(models.Model):
     type = models.CharField(max_length=3, choices=PACKAGE_TYPE)
     weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     size = models.CharField(max_length=10)
-    address = models.CharField(max_length=300)
-    recipient_contact = models.CharField(max_length=15)
+    pickup = models.ForeignKey('powerhub.Address', on_delete=models.SET_NULL, null=True)
     
     def save(self, *args, **kwargs):
         if not self.serial_no:
@@ -38,7 +37,39 @@ class Package(models.Model):
         super(Package, self).save(*args, **kwargs)
 
 
-class Order(models.Model):
+class Address(models.Model):
+    address = models.CharField(max_length=300)
+    contact = models.CharField(max_length=15)
+    longitude = models.CharField(max_length=20)
+    latitude = models.CharField(max_length=20)
+    timeframe = models.DateTimeField()
+    name = models.CharField(max_length=250)
+    
+
+    def __str__(self):
+        return self.name
+    
+
+class Delivery(models.Model):
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    is_insured = models.BooleanField(default=False)
+    package_is_returnable = models.BooleanField(default=False)
+    
+    
+    
+class DeliveryRecipient(models.Model):
+    address = models.CharField(max_length=300)
+    contact = models.CharField(max_length=15)
+    longitude = models.CharField(max_length=20)
+    latitude = models.CharField(max_length=20)
+    timeframe = models.DateTimeField()
+    name = models.CharField(max_length=250)
+    
+
+    def __str__(self):
+        return self.name
+
+class Shipment(models.Model):
     TYPE = (
         ("ED", "Express"),
         ("NM", "Normal")
@@ -52,18 +83,27 @@ class Order(models.Model):
         ("Glovo", "Glovo"),
         ("Chowdeck", "Chowdeck")
     )
+    
+    DELIVERY_STATUS = (
+        ("Pending", "Pending"),
+        ("Processing", "Processing"),
+        ("In-Transit", "In-Transit"),
+        ("Cancelled", "Cancelled")
+    )
+    
     vendor = models.ForeignKey(QueekaBusiness, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    order_sn = models.CharField(max_length=5, unique=True)
+    shipment_sn = models.CharField(max_length=5, unique=True)
     total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     delivery_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     delivery_service = models.CharField(max_length=8, choices=DELIVERY_SERVICE)
+    delivery_status = models.CharField(max_length=10, choices=DELIVERY_STATUS, default="Pending")
     type = models.CharField(max_length=2, choices=TYPE)
     package = models.ManyToManyField(Package, related_name="items")
     message = models.TextField()
     
     def save(self, *args, **kwargs):
-        if not self.order_sn:
-            self.order_sn = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
-        super(Order, self).save(*args, **kwargs)
+        if not self.shipment_sn:
+            self.shipment_sn = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        super(Shipment, self).save(*args, **kwargs)
