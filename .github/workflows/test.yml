@@ -45,6 +45,9 @@ jobs:
     - name: Shussh!
       run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
+    - name: Flutterwave!
+      run: echo "TEST_SECRET_KEY=${{ secrets.TEST_SECRET_KEY }}" >> $GITHUB_ENV
+
     - name: Run Tests
       run: |
         python manage.py test --settings=setup.settings.test_settings
