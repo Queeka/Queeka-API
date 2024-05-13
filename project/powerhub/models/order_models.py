@@ -29,6 +29,9 @@ class Package(models.Model):
     weight = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     size = models.CharField(max_length=10)
     pickup = models.ForeignKey('powerhub.Address', on_delete=models.SET_NULL, null=True)
+    is_insured = models.BooleanField(default=False)
+    is_returnable = models.BooleanField(default=False)
+    
     
     def save(self, *args, **kwargs):
         if not self.serial_no:
@@ -39,70 +42,74 @@ class Package(models.Model):
 
 class Address(models.Model):
     address = models.CharField(max_length=300)
-    contact = models.CharField(max_length=15)
     longitude = models.CharField(max_length=20)
     latitude = models.CharField(max_length=20)
     timeframe = models.DateTimeField()
-    name = models.CharField(max_length=250)
-    
 
     def __str__(self):
         return self.name
     
 
-class Delivery(models.Model):
+class PackagePickUp(models.Model):
+    package = models.OneToOneField(Package, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
-    is_insured = models.BooleanField(default=False)
-    package_is_returnable = models.BooleanField(default=False)
+    recipient_name = models.CharField(max_length=250)
+    recipient_contact = models.CharField(max_length=15)
     
-    
-    
-class DeliveryRecipient(models.Model):
-    address = models.CharField(max_length=300)
-    contact = models.CharField(max_length=15)
-    longitude = models.CharField(max_length=20)
-    latitude = models.CharField(max_length=20)
-    timeframe = models.DateTimeField()
-    name = models.CharField(max_length=250)
-    
-
     def __str__(self):
-        return self.name
+        return self.package.name
 
-class Shipment(models.Model):
-    TYPE = (
-        ("ED", "Express"),
-        ("NM", "Normal")
-    )
+
+class PackageDelivery(models.Model):
+    package = models.OneToOneField(Package, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    recipient_name = models.CharField(max_length=250)
+    recipient_contact = models.CharField(max_length=15)
     
-    DELIVERY_SERVICE = (
+    def __str__(self):
+        return self.package.name
+
+
+class DeliveryService(models.Model):
+    SERVICE = (
         ("DHL", "DHL"),
         ("GIGL", "GIGL"),
         ("Kwik", "Kwik"),
         ("RedStar", "RedStar"),
         ("Glovo", "Glovo"),
-        ("Chowdeck", "Chowdeck")
+        ("Chowdeck", "Chowdeck"),
+        ("TopShip", "TopShip")
     )
+    service = models.CharField(max_length=8, choices=SERVICE)
+    logo = models.URLField(null=False)
+    is_active = models.BooleanField(default=False)
     
+    
+class Shipment(models.Model):
+    TYPE = (
+        ("ED", "Express"),
+        ("NM", "Normal")
+    )
+
     DELIVERY_STATUS = (
         ("Pending", "Pending"),
         ("Processing", "Processing"),
         ("In-Transit", "In-Transit"),
         ("Cancelled", "Cancelled")
     )
-    
+
     vendor = models.ForeignKey(QueekaBusiness, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     shipment_sn = models.CharField(max_length=5, unique=True)
     total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     delivery_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    delivery_service = models.CharField(max_length=8, choices=DELIVERY_SERVICE)
     delivery_status = models.CharField(max_length=10, choices=DELIVERY_STATUS, default="Pending")
     type = models.CharField(max_length=2, choices=TYPE)
     package = models.ManyToManyField(Package, related_name="items")
     message = models.TextField()
-    
+
+
     def save(self, *args, **kwargs):
         if not self.shipment_sn:
             self.shipment_sn = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
