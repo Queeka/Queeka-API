@@ -16,23 +16,20 @@ from . import (
 
 logger = logging.getLogger(__name__)
 
-class CreateVirtualAccount(APIView):
+class CreateBusinessWallet(APIView):
     def post(self, request):
         user = request.user
         # amount = request.data.get("amount")
         
-        url = "https://api.flutterwave.com/v3/virtual-account-numbers"
+        url = "https://api.flutterwave.com/v3/payout-subaccounts"
         
         payload = {
+            "account_name": f"{user.first_name} {user.last_name}",
             "email": user.email,
-            "is_permanent": True,
-            "tx_ref": self.generate_tx_ref(),
-            "phonenumber": user.contact,
-            "firstname": user.first_name,
-            "lastname": user.last_name,
-            "narration": "Queeka Wallet",
-            "is_permanent": False,
-            "amount": 500
+            "mobilenumber": user.contact,
+            "country": "NG",
+            "bank_code": "232",
+            "account_reference": self.generate_tx_ref()
         }
         
         SECRET_KEY = test_settings.TEST_SECRET_KEY
@@ -47,8 +44,8 @@ class CreateVirtualAccount(APIView):
         if res.status_code == 200:
             return Response(res.json(), status=status.HTTP_200_OK)
         else:
-            logger.error("Failed to create virtual account. Status code: %s, Response: %s", res.status_code, res.text)
-            return Response({"error": "Failed to create virtual account"}, status=res.status_code)
+            logger.error("Failed to create Business Wallet. Status code: %s, Response: %s", res.status_code, res.text)
+            return Response({"error": "Failed to create Business Wallet"}, status=res.status_code)
 
     def generate_tx_ref(self):
         """ Generate a unique transaction reference using timestamp and UUID """

@@ -9,6 +9,6 @@ class BusinessWalletSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         balance = attrs.get("balance")
         if float(balance) < 0.00:
-            raise serializers.ErrorDetail("You can credit you account with less that 100 naira")
+            raise serializers.ErrorDetail("You can't credit your account with less than NGN 100")
         return attrs
     

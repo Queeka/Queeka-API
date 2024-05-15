@@ -1,6 +1,6 @@
 from django.urls import path
-from .views.wallet_view import CreateVirtualAccount
+from .views.wallet_view import CreateBusinessWallet
 
 urlpatterns = [
-    path('create-virtual-account', CreateVirtualAccount.as_view(), name='flutter')
+    path('create-wallet', CreateBusinessWallet.as_view(), name='flutter')
 ]

@@ -42,5 +42,5 @@ def send_otp(sender, instance, created, **kwargs):
                 to=f'whatsapp:{contact}'
             )
         except Exception as e:
-            logger.error(f"There has been an unexpected error sending OTP to {contact} using \n {account_sid} and  {auth_token} \n Error: {e}", exc_info=True)
+            logger.error(f"There has been an unexpected error sending OTP to {contact} \n Error: {e}", exc_info=True)
 
