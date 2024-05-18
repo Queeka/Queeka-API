@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager
 import string, random
 from django.db import models
+from django.utils import timezone
 from uuid import uuid4
+from datetime import timedelta
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -36,6 +38,8 @@ class User(AbstractUser):
     password = models.CharField(max_length=128)
     contact = models.CharField(max_length=15, unique=True)
     profile_image = models.ImageField(null=True)
+    is_individual = models.BooleanField(default=False)
+    is_business = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'contact'
     REQUIRED_FIELDS = []
@@ -60,12 +64,16 @@ class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     generated_confirmation_code = models.IntegerField(unique=True)
     verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.first_name
+    
+    def is_valid(self):
+        return self.created_at >= timezone.now() - timedelta(minutes=10)
 
-    def generate_confirmation_code(self):
-        # Generate and return a random 6-digit code
+    @staticmethod
+    def generate_confirmation_code():
         return ''.join(random.choices(string.digits, k=4))
 
     def save(self, *args, **kwargs):
@@ -92,3 +100,6 @@ class QueekaBusiness(models.Model):
             serial_number = "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
             self.business_sn = serial_number
         super(QueekaBusiness, self).save(*args, **kwargs)
+        
+        
+        

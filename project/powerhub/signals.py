@@ -1,19 +1,22 @@
-from .models import User, ConfirmationCode
+from .models import User, ConfirmationCode, NotificationSystem
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from rest_framework import response, status
 from twilio.rest import Client
-import environ, os, random, logging, string
+import environ, os, random, logging, string, requests
 from dotenv import load_dotenv
 from pathlib import Path
 from setup.settings import test_settings
 
+
+
 logger = logging.getLogger(__name__)
 
-
 # Signal to send OTP via Twilio WhatsApp
+logger = logging.getLogger(__name__)
+
 @receiver(post_save, sender=User)
-def send_otp(sender, instance, created, **kwargs):
+def handle_welcome_notification_and_otp(sender, instance, created, **kwargs):
     if created:
         contact = instance.contact
         try:
@@ -30,9 +33,6 @@ def send_otp(sender, instance, created, **kwargs):
             
             account_sid = test_settings.ACCOUNT_SID
             auth_token = test_settings.AUTH_TOKEN
-            
-            # account_sid = 'ACf8de57181d562761a5c83fc0c34437d6'
-            # auth_token = 'b2744e2b3fa9596a0596f80a49723d48'
         
             client = Client(account_sid, auth_token)
             otp_message = f'Hello! {instance.first_name}, Welcome to Queeka. Your OTP is {confirmation_code}'
@@ -44,3 +44,21 @@ def send_otp(sender, instance, created, **kwargs):
         except Exception as e:
             logger.error(f"There has been an unexpected error sending OTP to {contact} \n Error: {e}", exc_info=True)
 
+        # Notification Signals
+        try:
+            NotificationSystem.objects.create(
+                user=instance,
+                title="Welcome to Queeka!",
+                text=(
+                    "Hello and welcome to Queeka!\n"
+                    "I'm Israel Abiona, the CEO and Co-Founder of Queeka.\n"
+                    "Our journey begins with you and for you. Queeka aims to transform\n"
+                    "logistics management in Nigeria and across Africa.\n"
+                    "We're thrilled to have you join us on this exciting venture. We know it's going to be a long journey,\n"
+                    "but we're confident that you'll stay with us through it all. Thank you for joining us! Let's achieve great things together!"
+                )
+            )
+            logger.info("Message Sent Successfully")
+        except Exception as e:
+            logger.error(f"Could not send notification to {instance.contact} \n Error: {e}", exc_info=True)
+            return response.Response("Error Creating Notification!")
