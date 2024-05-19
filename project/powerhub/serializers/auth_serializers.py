@@ -26,11 +26,6 @@ class QueekaBusinessSerializer(serializers.ModelSerializer):
         fields = ["id", "owner", "name", "address", "city", "country", "business_sn"]
         read_only_fields = ["business_sn", "owner"]
     
-    def create(self, validated_data):
-        owner = self.context['request'].user
-        validated_data['owner'] = owner
-        return super().create(validated_data)
-    
     def to_representation(self, instance):
         representation = super(QueekaBusinessSerializer, self).to_representation(instance)
         representation['owner'] = {"id": instance.owner.id, "full_name": f"{instance.owner.first_name} {instance.owner.last_name}"}

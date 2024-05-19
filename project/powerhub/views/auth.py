@@ -59,7 +59,6 @@ def resend_otp(user):
     contact = user.contact
     try:
         confirmation_code = ConfirmationCode.objects.filter(user=user).latest('created_at')
-        
         if not confirmation_code.is_valid():
             logger.info("GENERATING NEW CONFIRMATION CODE ... ")
             confirmation_code_value = ConfirmationCode.generate_confirmation_code()
