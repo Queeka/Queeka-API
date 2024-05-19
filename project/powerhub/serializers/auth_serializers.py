@@ -24,7 +24,7 @@ class QueekaBusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model = QueekaBusiness
         fields = ["id", "owner", "name", "address", "city", "country", "business_sn"]
-        read_only_fields = ["business_sn", "owner"]
+        read_only_fields = ["business_sn"]
     
     def to_representation(self, instance):
         representation = super(QueekaBusinessSerializer, self).to_representation(instance)
