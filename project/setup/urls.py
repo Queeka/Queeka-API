@@ -48,5 +48,5 @@ urlpatterns = [
     # Auth
     path('signin/client', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path("verify/otp", verify_confirmation_code, name="verify")
+    path("verify/otp/<str:contact>", verify_confirmation_code, name="verify")
 ]

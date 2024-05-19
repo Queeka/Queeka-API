@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, response, status
+from django.http import JsonResponse
 # from rest_framework_simplejwt.views import TokenObtainPairView
 from . import (
     # Models
@@ -29,22 +30,29 @@ class RegisterBusinessView(viewsets.ModelViewSet):
 # Function to verify confirmation code
 @api_view(["POST"])
 def verify_confirmation_code(request, **kwargs):
+    # Get the submitted code from query parameters
     submitted_code = request.query_params.get("code")
-    user = request.user
-    try:
-        confirmation = ConfirmationCode.objects.get(user=user)
-        print("Generated code:", type(confirmation.generated_confirmation_code))  # Add this line for debugging
-        if confirmation.generated_confirmation_code == int(submitted_code):
-            confirmation.verified = True
-            confirmation.save()
-            return response.Response("OTP Verified Successfully", status=status.HTTP_202_ACCEPTED)
-            logger.info("OTP Verified")
-        else:
-            return response.Response("Incorrect Confirmation Code", status=status.HTTP_401_UNAUTHORIZED)
+    if not submitted_code:
+        return JsonResponse({'error': 'Code not provided'}, status=400)
 
+    # Get the contact from kwargs
+    contact = kwargs.get("contact")
+    if not contact:
+        return JsonResponse({'error': 'Contact not provided'}, status=400)
+
+    try:
+        # Filter confirmation codes by user contact
+        confirmation = ConfirmationCode.objects.get(user__contact=contact)
     except ConfirmationCode.DoesNotExist:
-        return response.Response("Confirmation Code Does Not Exist", status=status.HTTP_404_NOT_FOUND)
-        logger.error("Confirmation Code Does Not Exist")
+        return JsonResponse({'error': 'Confirmation code not found for this contact'}, status=404)
+    
+    # Check if the submitted code matches the stored code
+    if str(confirmation.generated_confirmation_code) == (submitted_code):
+        return JsonResponse({'status': 'success', 'message': 'Code verified successfully'})
+    else:
+        # print(confirmation.generated_confirmation_code)
+        return JsonResponse({'status': 'failure', 'message': 'Invalid confirmation code'}, status=400)
+
         
 @api_view(["POST"])
 def resend_otp(user):
