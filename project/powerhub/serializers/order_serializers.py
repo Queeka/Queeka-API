@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . import Package, Shipment, QueekaBusiness
+from . import Package, Shipment, ShipmentStatus, QueekaBusiness, PackageDelivery, DeliveryService, Address
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,7 +9,9 @@ class ShipmentSerializer(serializers.ModelSerializer):
         model = Shipment
         fields = "__all__"
         extra_kwargs = {"vendor": {"required": False}, 
-                        "shipment_sn": {"required": False}}
+                        "shipment_sn": {"required": False},
+                        }
+        read_only_fields = ("tracking_id",)
         
     def create(self, validated_data):
         vendor = self.context['request'].user
@@ -31,13 +33,50 @@ class ShipmentSerializer(serializers.ModelSerializer):
         representation = super(ShipmentSerializer, self).to_representation(instance)
         representation['vendor'] = {"business_name": f"{instance.vendor.name}", "vendor": f"{instance.vendor.owner.first_name} {instance.vendor.owner.last_name}"}
         representation['package'] = [{"name": package.name, "size": package.size, "weight": package.weight, "type": package.type, 
-                                    "recipient_address": package.address, "recipient_contact": package.recipient_contact} 
-                                    for package in instance.package.all()]
+                                    "recipient_address": package.pickup.address } for package in instance.package.all()]
         return representation
 
 
+class ShipmentStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShipmentStatus
+        fields = "__all__"
+
+
+
+class PackageDeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PackageDelivery
+        fields = "__all__"
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['address', 'longitude', 'latitude', 'timeframe']
+
+
 class PackageSerializer(serializers.ModelSerializer):
+    pickup = AddressSerializer()
+
     class Meta:
         model = Package
+        fields = [
+            'id', 'serial_no', 'name', 'image1', 'image2', 'quantity', 'type',
+            'weight', 'size', 'pickup', 'is_insured', 'is_returnable', 'value'
+        ]
+        read_only_fields = ("id", "serial_no",)
+        extra_kwargs = {"id": {"required": False}, "serial_no": {"required":False}}
+
+    def create(self, validated_data):
+        pickup_data = validated_data.pop('pickup')
+        address_instance = Address.objects.create(**pickup_data)
+        package_instance = Package.objects.create(pickup=address_instance, **validated_data)
+        return package_instance
+    
+
+class DeliveryServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeliveryService
         fields = "__all__"
-        extra_kwargs = {"serial_no": {'required': False}}
+        read_only_fields = ("id",)

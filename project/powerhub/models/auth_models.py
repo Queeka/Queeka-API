@@ -6,12 +6,12 @@ from uuid import uuid4
 from datetime import timedelta
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-    # Create a standard user
-        if not email:
-            raise ValueError('The Email field must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+    def create_user(self, contact, password=None, **extra_fields):
+        # Create a standard user
+        if not contact:
+            raise ValueError('The contact field must be set')
+        
+        user = self.model(contact=contact, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -26,7 +26,30 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(contact, password, **extra_fields)
+        return self.create_user(contact, password=password, **extra_fields)
+
+# class CustomUserManager(BaseUserManager):
+#     def create_user(self, email, password=None, **extra_fields):
+#     # Create a standard user
+#         if not email:
+#             raise ValueError('The Email field must be set')
+#         email = self.normalize_email(email)
+#         user = self.model(email=email, **extra_fields)
+#         user.set_password(password)
+#         user.save(using=self._db)
+#         return user
+
+#     def create_superuser(self, contact, password=None, **extra_fields):
+#         # Create a superuser
+#         extra_fields.setdefault('is_staff', True)
+#         extra_fields.setdefault('is_superuser', True)
+
+#         if extra_fields.get('is_staff') is not True:
+#             raise ValueError('Superuser must have is_staff=True.')
+#         if extra_fields.get('is_superuser') is not True:
+#             raise ValueError('Superuser must have is_superuser=True.')
+
+#         return self.create_user(contact, password, **extra_fields)
 
 
 class User(AbstractUser):

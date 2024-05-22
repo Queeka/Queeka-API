@@ -1,4 +1,4 @@
-from .models import User, ConfirmationCode, NotificationSystem
+from .models import User, ConfirmationCode, NotificationSystem, ShipmentStatus, Shipment
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from rest_framework import response, status
@@ -62,3 +62,31 @@ def handle_welcome_notification_and_otp(sender, instance, created, **kwargs):
         except Exception as e:
             logger.error(f"Could not send notification to {instance.contact} \n Error: {e}", exc_info=True)
             return response.Response("Error Creating Notification!")
+        
+        
+@receiver(post_save, sender=Shipment)
+def handle_initiate_shipment_status_process(sender, instance, created,*args, **kwargs):
+    if created:
+        shipment = instance
+        vendor = instance.vendor
+        
+        # Send Notification
+        try:
+            NotificationSystem.objects.create(
+                user = shipment.vendor,
+                title="Shipment",
+                text=(
+                    f"Hello {vendor.first_name} {vendor.last_name}, \n"
+                    "Your Shipment request has been recieved and is been processed \n"
+                    "A courier from {shipment.delivery_service.service} will get to you shortly!"
+                    )
+            )
+            
+            ShipmentStatus.objects.create(
+                shipment=shipment,
+                status="PR"
+            )
+        except Exception as e:
+            # print(str(e))
+            logger.error(str(e))
+            return response.Response({"status": "error", "data": str(e)})

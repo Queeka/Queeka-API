@@ -7,7 +7,8 @@ from powerhub.views.auth import (
 # Shipment & Package
 from powerhub.views.orders import (
     ShipmentView,
-    PackageView
+    PackageView,
+    DeliveryServiceView
 )
 
 # Notification
@@ -34,6 +35,7 @@ router.register("register/business", RegisterBusinessView, basename='queeka-busi
 # Shipment & Package
 router.register("create-package", PackageView, basename='shipment-package')
 router.register("create-shipment", ShipmentView, basename='shipment')
+router.register("delivery-service", DeliveryServiceView, basename='services')
 
 # Notification
 router.register("notifications", NotificationView, basename="notification")
