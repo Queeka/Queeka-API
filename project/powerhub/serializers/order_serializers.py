@@ -38,6 +38,8 @@ class ShipmentSerializer(serializers.ModelSerializer):
 
 
 class ShipmentStatusSerializer(serializers.ModelSerializer):
+    shipment = ShipmentSerializer()
+
     class Meta:
         model = ShipmentStatus
         fields = "__all__"

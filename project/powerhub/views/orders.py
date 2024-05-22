@@ -46,17 +46,23 @@ class DeliveryServiceView(viewsets.ModelViewSet):
 
 @api_view(["GET"])
 def track_shipment(request, tracking_id=None):
-    """Allow Clients/Customers Track their Order"""
+    """Allow Clients/Customers to Track their Order"""
     if not tracking_id:
         return JsonResponse({"status": "error", "message": "Input tracking ID"})
 
-    # Get Related Shipment
+    # Get the Shipment related to the tracking_id
     shipment = Shipment.objects.filter(tracking_id=tracking_id).first()
 
     if not shipment:
         return JsonResponse({"status": "error", "message": "Shipment not found"})
 
-    shipment_data = ShipmentSerializer(shipment).data
+    # Get the related ShipmentStatus instances
+    shipment_statuses = ShipmentStatus.objects.filter(shipment=shipment)
 
-    return JsonResponse({"status": "success", "data": shipment_data})
+    if not shipment_statuses:
+        return JsonResponse({"status": "error", "message": "No shipment status found"})
 
+    # Serialize the shipment statuses
+    shipment_status_data = ShipmentStatusSerializer(shipment_statuses, many=True).data
+
+    return JsonResponse({"status": "success", "data": shipment_status_data})

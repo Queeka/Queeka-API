@@ -7,6 +7,7 @@ import environ, os, random, logging, string, requests
 from dotenv import load_dotenv
 from pathlib import Path
 from setup.settings import test_settings
+from django.shortcuts import get_object_or_404
 
 
 
@@ -65,25 +66,24 @@ def handle_welcome_notification_and_otp(sender, instance, created, **kwargs):
         
         
 @receiver(post_save, sender=Shipment)
-def handle_initiate_shipment_status_process(sender, instance, created,*args, **kwargs):
+def handle_initiate_shipment_status_process(sender, instance, created, **kwargs):
     if created:
-        shipment = instance
         vendor = instance.vendor
         
+        user = get_object_or_404(User, id=vendor.owner.id)
         # Send Notification
         try:
             NotificationSystem.objects.create(
-                user = shipment.vendor,
+                user = user,
                 title="Shipment",
                 text=(
-                    f"Hello {vendor.first_name} {vendor.last_name}, \n"
                     "Your Shipment request has been recieved and is been processed \n"
-                    "A courier from {shipment.delivery_service.service} will get to you shortly!"
+                    f"A courier from {instance.delivery_service.service} will get to you shortly!"
                     )
             )
             
             ShipmentStatus.objects.create(
-                shipment=shipment,
+                shipment=instance,
                 status="PR"
             )
         except Exception as e:

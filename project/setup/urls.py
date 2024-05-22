@@ -45,6 +45,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('queeka/', include(router.urls)),
     path('queekas/', include('finance.urls')),
+    path('api/', include('powerhub.urls')),
     
     
     # Auth
