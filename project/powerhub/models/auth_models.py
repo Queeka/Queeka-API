@@ -4,29 +4,20 @@ from django.db import models
 from django.utils import timezone
 from uuid import uuid4
 from datetime import timedelta
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, contact, password=None, **extra_fields):
-        # Create a standard user
         if not contact:
-            raise ValueError('The contact field must be set')
-        
+            raise ValueError('The Contact field must be set')
         user = self.model(contact=contact, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, contact, password=None, **extra_fields):
-        # Create a superuser
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self.create_user(contact, password=password, **extra_fields)
+        return self.create_user(contact, password, **extra_fields)
 
 # class CustomUserManager(BaseUserManager):
 #     def create_user(self, email, password=None, **extra_fields):
@@ -81,7 +72,7 @@ class User(AbstractUser):
         super(User, self).save(*args, **kwargs)
 
 
-
+#AdminQueeka10
 # Define ConfirmationCode model
 class ConfirmationCode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

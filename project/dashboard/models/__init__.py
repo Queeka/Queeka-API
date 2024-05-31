@@ -1,0 +1,1 @@
+from powerhub.models.auth_models import User

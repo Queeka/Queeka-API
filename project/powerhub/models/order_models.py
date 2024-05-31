@@ -42,10 +42,17 @@ class Package(models.Model):
             generated_serial_no = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
             self.serial_no = generated_serial_no
         super(Package, self).save(*args, **kwargs)
+        
+    def __str__(self):
+        return self.serial_no
+    
 
 
 class Address(models.Model):
     address = models.CharField(max_length=300)
+    state = models.CharField(max_length=20, null=True)
+    city = models.CharField(max_length=50, null=True)
+    country = models.CharField(max_length=50, default="Nigeria")
     longitude = models.CharField(max_length=20)
     latitude = models.CharField(max_length=20)
     timeframe = models.DateTimeField(auto_now_add=True)
@@ -98,11 +105,20 @@ class DeliveryService(models.Model):
             self.id = "".join(random.choices(string.digits, k=5))
         super(DeliveryService, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.service
 
 class Shipment(models.Model):
     TYPE = (
         ("ED", "Express"),
         ("NM", "Normal")
+    )
+    
+    VEHICLE_TYPE = (
+        ("BIKE", "BIKE"),
+        ("CAR", "CAR"),
+        ("VAN", "VAN"),
+        ("TRUCK", "TRUCK")
     )
 
     vendor = models.ForeignKey(QueekaBusiness, on_delete=models.CASCADE)
@@ -114,9 +130,13 @@ class Shipment(models.Model):
     total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     delivery_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     type = models.CharField(max_length=2, choices=TYPE)
+    vehicle_type = models.CharField(max_length=5, choices=VEHICLE_TYPE, null=True)
     package = models.ManyToManyField(Package, related_name="shipments")
+    status = models.ManyToManyField('powerhub.ShipmentStatus', related_name="statuses")
     message = models.TextField()
 
+    def __str__(self):
+        return self.tracking_id
 
     def save(self, *args, **kwargs):
         if not self.shipment_sn:
@@ -136,9 +156,9 @@ class ShipmentStatus(models.Model):
         ("DEL", "Delivered"),
         ("CANC", "Cancelled")
     )
-    shipment = models.ForeignKey(Shipment, related_name='statuses', on_delete=models.CASCADE)
     status = models.CharField(max_length=4, choices=STATUS, default="PR")
     timestamp = models.DateTimeField(auto_now_add=True)
+    updated_at = models.TimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.status} at {self.timestamp}"

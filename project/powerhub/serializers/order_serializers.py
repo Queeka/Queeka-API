@@ -33,7 +33,9 @@ class ShipmentSerializer(serializers.ModelSerializer):
         representation = super(ShipmentSerializer, self).to_representation(instance)
         representation['vendor'] = {"business_name": f"{instance.vendor.name}", "vendor": f"{instance.vendor.owner.first_name} {instance.vendor.owner.last_name}"}
         representation['package'] = [{"name": package.name, "size": package.size, "weight": package.weight, "type": package.type, 
-                                    "recipient_address": package.pickup.address } for package in instance.package.all()]
+                                    "recipient_address": package.pickup.address, "state": package.pickup.state, "city": package.pickup.city, "country": package.pickup.country } for package in instance.package.all()]
+        representation['status'] = [{"status": status.status, "timestamp": status.timestamp.strftime("%H:%M:%p")} for status in instance.status.all()]
+        representation['delivery_service'] = instance.delivery_service.service
         return representation
 
 
@@ -55,7 +57,7 @@ class PackageDeliverySerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['address', 'longitude', 'latitude', 'timeframe']
+        fields = ['address', 'state', 'city', 'country', 'longitude', 'latitude', 'timeframe']
 
 
 class PackageSerializer(serializers.ModelSerializer):

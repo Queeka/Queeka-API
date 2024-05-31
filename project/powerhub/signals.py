@@ -10,9 +10,6 @@ from setup.settings import test_settings
 from django.shortcuts import get_object_or_404
 
 
-
-logger = logging.getLogger(__name__)
-
 # Signal to send OTP via Twilio WhatsApp
 logger = logging.getLogger(__name__)
 

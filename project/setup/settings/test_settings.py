@@ -2,6 +2,7 @@ from pathlib import Path
 import environ
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Specify the path to the .env file for staging environment
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'settings/environs/.env.test')
@@ -46,11 +47,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Apps
     'powerhub',
+    'dashboard',
+    'finance',
+    
+    # Third Party
     'rest_framework',
     "cloudinary_storage",
-    'cloudinary',
-    'finance'
+    'cloudinary'
 ]
 
 MIDDLEWARE = [
@@ -95,14 +101,38 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    }
 }
 
-# STORAGES = {
-#     "media": {
-#         "BACKEND": "storages.backends.cloudinary.MediaCloudinaryStorage",
-#     }
-# }
+CLOUDINARY_STORAGE = {
+    "CLOUDINARY_URL": env("CLOUDINARY_URL")
+}
+
+AUTHENTICATION_BACKENDS = [
+    'powerhub.backends.CustomUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
+
+    "ALGORITHM": "HS384",
+}
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -149,12 +179,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "powerhub.User"
-
-CLOUDINARY_STORAGE = {
-    "CLOUDINARY_URL": env("CLOUDINARY_URL")
-}
-
-# TEST_RUNNER = 'setup.runner.CustomTestRunner'
 
 ACCOUNT_SID = env("ACCOUNT_SID")
 AUTH_TOKEN = env("AUTH_TOKEN")
