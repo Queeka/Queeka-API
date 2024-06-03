@@ -6,15 +6,15 @@ class CustomUserBackend(BaseBackend):
         User = get_user_model()
         try:
             user = User.objects.get(contact=contact)
-            print("User found:", user)  # Debugging output
+            # print("User found:", user)  # Debugging output
         except User.DoesNotExist:
-            print("User not found")  # Debugging output
+            # print("User not found")  # Debugging output
             return None
 
         if user.check_password(password):
-            print("Password correct")  # Debugging output
+            # print("Password correct")  # Debugging output
             return user
-        print("Password incorrect")  # Debugging output
+        # print("Password incorrect")  # Debugging output
         return None
 
     def get_user(self, user_id):
