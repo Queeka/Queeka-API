@@ -1,5 +1,5 @@
 from powerhub.models.auth_models import User, QueekaBusiness, ConfirmationCode
-from powerhub.serializers.auth_serializers import SignUpUserSerializer, QueekaBusinessSerializer
+from powerhub.serializers.auth_serializers import SignUpUserSerializer, QueekaBusinessSerializer, MyTokenObtainPairSerializer
 
 # Shipment & Package
 from powerhub.models.order_models import Shipment, Package, PackageDelivery, ShipmentStatus, DeliveryService

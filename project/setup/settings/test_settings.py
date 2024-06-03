@@ -131,6 +131,8 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 
     "ALGORITHM": "HS384",
+    
+    "TOKEN_OBTAIN_SERIALIZER": "powerhub.serializers.MyTokenObtainPairSerializer",
 }
 
 

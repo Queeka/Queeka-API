@@ -1,7 +1,10 @@
 from . import User, Waitlist, QueekaBusiness
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 import re
+
 
 class SignUpUserSerializer(serializers.ModelSerializer):
     contact = serializers.CharField(required=False)
@@ -19,6 +22,25 @@ class SignUpUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error": "Passwords must be more than 5 characters."})
         return value
 
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['email'] = user.email
+        return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        
+        data['data'] = {
+            "user_data": SignUpUserSerializer(self.user).data
+        } 
+        
+        refresh = self.get_token(self.user)
+        data["refresh"] = str(refresh)
+        data["access"] = str(refresh.access_token)
+        return data
 
 class QueekaBusinessSerializer(serializers.ModelSerializer):
     class Meta:

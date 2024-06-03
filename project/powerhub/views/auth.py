@@ -1,22 +1,28 @@
 from rest_framework import viewsets, permissions, response, status
 from django.http import JsonResponse
-# from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView
 from . import (
-    # Models
+    # MODELS
     User, 
     QueekaBusiness, 
     ConfirmationCode,
-    # Serializers
+    
+    # SERIALIZERS
     SignUpUserSerializer,
-    QueekaBusinessSerializer
+    QueekaBusinessSerializer,
+    MyTokenObtainPairSerializer
     )
-
 from rest_framework.decorators import api_view
 
 
 class SignUpUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = SignUpUserSerializer
+    
+
+class SignInUserView(TokenObtainPairView):
+    #    permission_classes = (permissions.AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
 
 
 class RegisterBusinessView(viewsets.ModelViewSet):
