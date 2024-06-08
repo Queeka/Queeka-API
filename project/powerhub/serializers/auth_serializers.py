@@ -35,22 +35,21 @@ class QueekaBusinessSerializer(serializers.ModelSerializer):
         return representation
     
     
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['email'] = user.email
-        return token
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         return token
     
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        user = self.user
+#     def validate(self, attrs):
+#         data = super().validate(attrs)
+#         user = self.user
         
-        data['data'] = {
-            "user_data": SignUpUserSerializer(user).data,
-        } 
+#         data['data'] = {
+#             "user_data": SignUpUserSerializer(user).data,
+#         } 
         
-        refresh = self.get_token(user)
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-        return data
+#         refresh = self.get_token(user)
+#         data["refresh"] = str(refresh)
+#         data["access"] = str(refresh.access_token)
+#         return data

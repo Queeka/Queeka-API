@@ -2,7 +2,7 @@ from powerhub.views.auth import (
     SignUpUserViewSet, 
     RegisterBusinessView,
     verify_confirmation_code,
-    SignInUserView
+    # SignInUserView
 )
 
 # Shipment & Package
@@ -21,6 +21,11 @@ from powerhub.views.notifications import (
 # Dashboard
 from dashboard.views.counts import (
     OngoingShipments
+)
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
 )
 
 from django.contrib import admin
@@ -54,7 +59,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     
     # Auth
-    path('signin/client', SignInUserView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('signin/client', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("verify/otp/<str:contact>", verify_confirmation_code, name="verify")
 ]

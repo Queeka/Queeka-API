@@ -132,7 +132,7 @@ SIMPLE_JWT = {
 
     "ALGORITHM": "HS384",
     
-    "TOKEN_OBTAIN_SERIALIZER": "powerhub.serializers.MyTokenObtainPairSerializer",
+    # "TOKEN_OBTAIN_SERIALIZER": "powerhub.serializers.MyTokenObtainPairSerializer",
 }
 
 
