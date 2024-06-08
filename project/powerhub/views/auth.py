@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions, response, status
 from django.http import JsonResponse
-# from rest_framework_simplejwt.views import TokenObtainPairView
+from django.shortcuts import get_object_or_404
 from . import (
     # MODELS
     User, 
@@ -10,7 +10,6 @@ from . import (
     # SERIALIZERS
     SignUpUserSerializer,
     QueekaBusinessSerializer,
-    # MyTokenObtainPairSerializer
     )
 from rest_framework.decorators import api_view
 
@@ -18,11 +17,6 @@ from rest_framework.decorators import api_view
 class SignUpUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = SignUpUserSerializer
-    
-
-# class SignInUserView(TokenObtainPairView):
-#     #    permission_classes = (permissions.AllowAny,)
-#     serializer_class = MyTokenObtainPairSerializer
 
 
 class RegisterBusinessView(viewsets.ModelViewSet):
@@ -33,6 +27,26 @@ class RegisterBusinessView(viewsets.ModelViewSet):
     serializer_class = QueekaBusinessSerializer
     
 
+@api_view(["GET"])
+# Function to Get User Data
+def retrieve_user_info(request):
+    user = request.user
+    try:
+        user_data = get_object_or_404(User, pk=user.id)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        business_data = QueekaBusiness.objects.filter(owner=user).first()
+    except QueekaBusiness.DoesNotExist:
+        return None  
+
+    data = {
+        "user_data": SignUpUserSerializer(user_data).data,
+        "business_data": QueekaBusinessSerializer(business_data).data if business_data else []
+    }
+    return JsonResponse({"status": "success", "data": data}, status=status.HTTP_200_OK)
+    
 # Function to verify confirmation code
 @api_view(["POST"])
 def verify_confirmation_code(request, **kwargs):
