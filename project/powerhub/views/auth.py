@@ -46,7 +46,8 @@ def retrieve_user_info(request):
         "business_data": QueekaBusinessSerializer(business_data).data if business_data else []
     }
     return JsonResponse({"status": "success", "data": data}, status=status.HTTP_200_OK)
-    
+
+
 # Function to verify confirmation code
 @api_view(["POST"])
 def verify_confirmation_code(request, **kwargs):

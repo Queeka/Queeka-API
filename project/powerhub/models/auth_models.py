@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from uuid import uuid4
 from datetime import timedelta
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, contact, password=None, **extra_fields):
         if not contact:
