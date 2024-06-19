@@ -2,9 +2,9 @@ name: Queeka Staging Action
 
 on:
   push:
-    branches: [ "staging" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "staging" ]
+    branches: [ "main" ]
 
 jobs:
   build:
