@@ -217,5 +217,17 @@ AUTH_TOKEN = env("AUTH_TOKEN")
 # Redis
 REDIS_URL = env("REDIS_URL")
 
+#Celery
+# Task result expiration time in seconds (default is 1 day or 86400 seconds)
+CELERY_TASK_RESULT_EXPIRES = 1800  # Results will expire after 1 hour
+
+# Task serialization and deserialization
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+
+# Redis result extended expiry
+CELERY_RESULT_EXTENDED_EXPIRE = True
+
 
 TEST_SECRET_KEY= env("TEST_SECRET_KEY")
