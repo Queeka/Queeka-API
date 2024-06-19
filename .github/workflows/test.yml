@@ -48,6 +48,9 @@ jobs:
     - name: Flutterwave!
       run: echo "TEST_SECRET_KEY=${{ secrets.TEST_SECRET_KEY }}" >> $GITHUB_ENV
 
+    - name: Redis
+      run: echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> $GITHUB_ENV
+
     - name: Run Tests
       run: |
         python manage.py test --settings=setup.settings.test_settings
