@@ -9,6 +9,7 @@ import re
 class SignUpUserSerializer(serializers.ModelSerializer):
     contact = serializers.CharField(required=False)
     password = serializers.CharField(required=False)
+    
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "email", "contact", "password", "profile_image"]
@@ -21,6 +22,38 @@ class SignUpUserSerializer(serializers.ModelSerializer):
         if len(value) <= 5:
             raise serializers.ValidationError({"error": "Passwords must be more than 5 characters."})
         return value
+    
+    def create(self, validated_data):
+        sme = User(**validated_data)
+        sme.tier_1=True
+        sme.save()
+        return sme
+
+
+
+class SignUpSMESerializer(serializers.ModelSerializer):
+    contact = serializers.CharField(required=False)
+    password = serializers.CharField(required=False)
+    
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name", "email", "contact", "password", "profile_image"]
+        extra_kwargs = {"email": {"required": False}}
+        
+    def validate_password(self, value):
+        # Password Security
+        if not re.match(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).+$', value):
+            raise serializers.ValidationError({"error": "Passwords must include at least one special symbol, one number, one lowercase letter, and one uppercase letter."})
+        if len(value) <= 5:
+            raise serializers.ValidationError({"error": "Passwords must be more than 5 characters."})
+        return value
+    
+    def create(self, validated_data):
+        sme = User(**validated_data)
+        sme.tier_3=True
+        sme.save()
+        return sme
+
 
 
 class QueekaBusinessSerializer(serializers.ModelSerializer):
@@ -34,22 +67,8 @@ class QueekaBusinessSerializer(serializers.ModelSerializer):
         representation['owner'] = {"id": instance.owner.id, "full_name": f"{instance.owner.first_name} {instance.owner.last_name}"}
         return representation
     
-    
-# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-#     @classmethod
-#     def get_token(cls, user):
-#         token = super().get_token(user)
-#         return token
-    
-#     def validate(self, attrs):
-#         data = super().validate(attrs)
-#         user = self.user
-        
-#         data['data'] = {
-#             "user_data": SignUpUserSerializer(user).data,
-#         } 
-        
-#         refresh = self.get_token(user)
-#         data["refresh"] = str(refresh)
-#         data["access"] = str(refresh.access_token)
-#         return data
+    def create(self, validated_data):
+        sme = QueekaBusiness(**validated_data)
+        sme.tier_2=True
+        sme.save()
+        return sme

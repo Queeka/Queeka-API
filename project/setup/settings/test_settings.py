@@ -210,8 +210,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "powerhub.User"
 
+# Twilio
 ACCOUNT_SID = env("ACCOUNT_SID")
 AUTH_TOKEN = env("AUTH_TOKEN")
+
+# Redis
+REDIS_URL = env("REDIS_URL")
 
 
 TEST_SECRET_KEY= env("TEST_SECRET_KEY")
