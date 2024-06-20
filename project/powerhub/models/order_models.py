@@ -50,6 +50,8 @@ class Package(models.Model):
 
 class Address(models.Model):
     address = models.CharField(max_length=300)
+    recipient_name = models.CharField(max_length=350, null=True)
+    recipient_contact = models.CharField(max_length=15, null=True)
     state = models.CharField(max_length=20, null=True)
     city = models.CharField(max_length=50, null=True)
     country = models.CharField(max_length=50, default="Nigeria")
@@ -65,24 +67,24 @@ class Recipient(models.Model):
     full_name = models.CharField(max_length=400)
     
 
-class PackagePickUp(models.Model):
-    package = models.OneToOneField(Package, on_delete=models.CASCADE)
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
-    recipient_name = models.CharField(max_length=250)
-    recipient_contact = models.CharField(max_length=15)
+# class PackagePickUp(models.Model):
+#     package = models.OneToOneField(Package, on_delete=models.CASCADE)
+#     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+#     recipient_name = models.CharField(max_length=250)
+#     recipient_contact = models.CharField(max_length=15)
     
-    def __str__(self):
-        return self.package.name
+#     def __str__(self):
+#         return self.package.name
 
 
-class PackageDelivery(models.Model):
-    package = models.OneToOneField(Package, on_delete=models.CASCADE)
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
-    recipient_name = models.CharField(max_length=250)
-    recipient_contact = models.CharField(max_length=15)
+# class PackageDelivery(models.Model):
+#     package = models.OneToOneField(Package, on_delete=models.CASCADE)
+#     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+#     recipient_name = models.CharField(max_length=250)
+#     recipient_contact = models.CharField(max_length=15)
     
-    def __str__(self):
-        return self.package.name
+#     def __str__(self):
+#         return self.package.name
 
 
 class DeliveryService(models.Model):

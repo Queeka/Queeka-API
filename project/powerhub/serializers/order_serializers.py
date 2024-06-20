@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . import Package, Shipment, ShipmentStatus, QueekaBusiness, PackageDelivery, DeliveryService, Address
+from . import Package, Shipment, ShipmentStatus, QueekaBusiness, DeliveryService, Address
 import logging
 
 logger = logging.getLogger(__name__)
@@ -10,6 +10,7 @@ class ShipmentSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"vendor": {"required": False}, 
                         "shipment_sn": {"required": False},
+                        "status": {"required":False}
                         }
         read_only_fields = ("tracking_id",)
         
@@ -17,6 +18,7 @@ class ShipmentSerializer(serializers.ModelSerializer):
         vendor = self.context['request'].user
         business = self.get_vendor_business(vendor)
         validated_data['vendor'] = business
+        # validated_data["status"] = "PR"
         return super().create(validated_data)
     
     def get_vendor_business(self, vendor_id):
@@ -33,7 +35,7 @@ class ShipmentSerializer(serializers.ModelSerializer):
         representation = super(ShipmentSerializer, self).to_representation(instance)
         representation['vendor'] = {"business_name": f"{instance.vendor.name}", "vendor": f"{instance.vendor.owner.first_name} {instance.vendor.owner.last_name}"}
         representation['package'] = [{"name": package.name, "size": package.size, "weight": package.weight, "type": package.type, 
-                                    "recipient_address": package.pickup.address, "state": package.pickup.state, "city": package.pickup.city, "country": package.pickup.country } for package in instance.package.all()]
+                                    "recipient_address": package.pickup.address, "recipient_contact": package.pickup.recipient_contact, "recipient_name": package.pickup.recipient_name, "state": package.pickup.state, "city": package.pickup.city, "country": package.pickup.country } for package in instance.package.all()]
         representation['status'] = [{"status": status.status, "timestamp": status.timestamp.strftime("%H:%M:%p")} for status in instance.status.all()]
         representation['delivery_service'] = instance.delivery_service.service
         return representation
@@ -48,16 +50,16 @@ class ShipmentStatusSerializer(serializers.ModelSerializer):
 
 
 
-class PackageDeliverySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PackageDelivery
-        fields = "__all__"
+# class PackageDeliverySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = PackageDelivery
+#         fields = "__all__"
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['address', 'state', 'city', 'country', 'longitude', 'latitude', 'timeframe']
+        fields = ['address', 'recipient_name', 'state', 'city', 'country', 'longitude', 'latitude', 'timeframe']
 
 
 class PackageSerializer(serializers.ModelSerializer):
