@@ -17,6 +17,7 @@ app.conf.update(
     broker_connection_retry_on_startup=True,
     worker_cancel_long_running_tasks_on_connection_loss=True,
 )
+app.config_from_object('django.conf:settings', namespace='CELERY')
 
 worker_timeout = timedelta(minutes=5)
 # Load task modules from all registered Django apps.
