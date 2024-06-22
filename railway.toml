@@ -1,6 +1,0 @@
-# [build]
-# builder = "nixpacks"
-# buildCommand = "echo building!"
-
-# [deploy]
-# startCommand = "gunicorn setup.wsgi.test_wsgi --log-file - && celery -A setup worker -l INFO"
