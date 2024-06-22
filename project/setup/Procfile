@@ -1,2 +1,1 @@
 web: gunicorn setup.wsgi.test_wsgi --log-file -
-worker: celery -A setup worker --pool=solo -l debug
