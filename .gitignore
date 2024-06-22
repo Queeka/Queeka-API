@@ -11,7 +11,9 @@ __pycache__/
 
 environs/
 
-.virtualenv
+.virtualenv/
+
+.venv/
 
 *.env.staging
 *.env.test

@@ -1,1 +1,0 @@
-web: gunicorn setup.wsgi.test_wsgi --log-file -
