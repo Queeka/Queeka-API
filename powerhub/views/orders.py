@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class PackageView(viewsets.ModelViewSet):
     """
-    Viewset for viewing and editing Order Packages
+    Viewset for viewing and editing Order Package
     """
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
