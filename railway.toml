@@ -5,7 +5,7 @@ buildCommand = "echo building!"
 [deploy]
 runtime = "UNSPECIFIED"
 numReplicas = 1
-startCommand = "gunicorn setup.wsgi.test_wsgi --log-file - && celery -A setup worker --pool=solo -l info"
+startCommand = "gunicorn setup.wsgi.test_wsgi --log-file - && celery -A setup worker -l INFO"
 sleepApplication = true
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
