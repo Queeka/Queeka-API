@@ -27,7 +27,7 @@ class PackageView(viewsets.ModelViewSet):
     """
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-
+    
 
 class ShipmentView(viewsets.ModelViewSet):
     """
