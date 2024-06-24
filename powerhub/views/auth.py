@@ -10,6 +10,7 @@ from . import (
     # SERIALIZERS
     SignUpUserSerializer,
     QueekaBusinessSerializer,
+    SignUpSMESerializer
     )
 from rest_framework.decorators import api_view
 
@@ -25,7 +26,15 @@ class RegisterBusinessView(viewsets.ModelViewSet):
     """
     queryset= QueekaBusiness.objects.select_related("owner")
     serializer_class = QueekaBusinessSerializer
-    
+
+
+class RegisterSMEView(viewsets.ModelViewSet):
+    """
+    INTENTIONALLY REDUNDANT! SHOULD BE REMOVED AFTER
+    """
+    queryset = User.objects.filter(tier_2=True)
+    serializer_class = SignUpSMESerializer
+
 
 @api_view(["GET"])
 # Function to Get User Data

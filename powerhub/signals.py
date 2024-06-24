@@ -14,6 +14,7 @@ from celery import shared_task
 
 # Signal to send OTP via Twilio WhatsApp
 logger = logging.getLogger(__name__)
+
 @shared_task(bind=True)
 def send_welcome_notification_and_otp(self, user_id):
     logger.info(f"Task started with user_id: {user_id}")

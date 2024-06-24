@@ -32,7 +32,6 @@ class User(AbstractUser):
     contact = models.CharField(max_length=15, unique=True)
     profile_image = models.ImageField(null=True)
     is_individual = models.BooleanField(default=False)
-    # is_business = models.BooleanField(default=False)
     tier_1 = models.BooleanField(default=False)
     tier_2 = models.BooleanField(default=False)
     tier_3 = models.BooleanField(default=False)

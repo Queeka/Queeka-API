@@ -2,6 +2,7 @@ from powerhub.views.auth import (
     SignUpUserViewSet, 
     RegisterBusinessView,
     verify_confirmation_code,
+    RegisterSMEView
     # SignInUserView
 )
 
@@ -37,6 +38,7 @@ router = routers.DefaultRouter()
 # Authenticate
 router.register("signup/client", SignUpUserViewSet, basename='sign_up_client')
 router.register("register/business", RegisterBusinessView, basename='queeka-business')
+router.register("register/sme", RegisterSMEView, basename='register-sme')
 
 # Shipment & Package
 router.register("create-package", PackageView, basename='shipment-package')
