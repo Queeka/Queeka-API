@@ -42,18 +42,11 @@ class ShipmentSerializer(serializers.ModelSerializer):
 
 
 class ShipmentStatusSerializer(serializers.ModelSerializer):
-    shipment = ShipmentSerializer()
+    # shipment = ShipmentSerializer()
 
     class Meta:
         model = ShipmentStatus
         fields = "__all__"
-
-
-
-# class PackageDeliverySerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = PackageDelivery
-#         fields = "__all__"
 
 
 class AddressSerializer(serializers.ModelSerializer):

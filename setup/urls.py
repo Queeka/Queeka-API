@@ -20,9 +20,9 @@ from powerhub.views.notifications import (
     )
 
 # Dashboard
-from dashboard.views.counts import (
-    OngoingShipments
-)
+# from dashboard.views.counts import (
+#     OngoingShipments
+# )
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -47,7 +47,7 @@ router.register("delivery-service", DeliveryServiceView, basename='services')
 router.register("shipment", GetAndUpdateShipmentStatus, basename='update-shipment')
 
 # Dashboard
-router.register('ongoing-shipments', OngoingShipments, basename='ongoing-shipments')
+# router.register('ongoing-shipments', OngoingShipments, basename='ongoing-shipments')
 
 # Notification
 router.register("notifications", NotificationView, basename="notification")

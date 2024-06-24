@@ -61,30 +61,6 @@ class Address(models.Model):
 
     def __str__(self):
         return self.name
-    
-
-class Recipient(models.Model):
-    full_name = models.CharField(max_length=400)
-    
-
-# class PackagePickUp(models.Model):
-#     package = models.OneToOneField(Package, on_delete=models.CASCADE)
-#     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
-#     recipient_name = models.CharField(max_length=250)
-#     recipient_contact = models.CharField(max_length=15)
-    
-#     def __str__(self):
-#         return self.package.name
-
-
-# class PackageDelivery(models.Model):
-#     package = models.OneToOneField(Package, on_delete=models.CASCADE)
-#     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
-#     recipient_name = models.CharField(max_length=250)
-#     recipient_contact = models.CharField(max_length=15)
-    
-#     def __str__(self):
-#         return self.package.name
 
 
 class DeliveryService(models.Model):
@@ -109,6 +85,7 @@ class DeliveryService(models.Model):
 
     def __str__(self):
         return self.service
+
 
 class Shipment(models.Model):
     TYPE = (
@@ -146,8 +123,9 @@ class Shipment(models.Model):
         if not self.tracking_id:
             self.tracking_id = "".join(random.choices(string.ascii_uppercase + string.digits, k=7))
         super(Shipment, self).save(*args, **kwargs)
-        
-        
+
+
+
 class ShipmentStatus(models.Model):
     STATUS = (
         ("PR", "Processing"),

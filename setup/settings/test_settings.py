@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     # Third Party
     'rest_framework',
     "cloudinary_storage",
-    'cloudinary'
+    'cloudinary',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

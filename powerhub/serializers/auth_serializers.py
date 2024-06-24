@@ -67,7 +67,6 @@ class SignUpSMESerializer(BaseSignUpSerializer):
         return otp
 
 
-
 class QueekaBusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model = QueekaBusiness

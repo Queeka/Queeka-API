@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets, response, status
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 import logging
 
 
@@ -70,10 +71,10 @@ def track_shipment(request, tracking_id=None):
 class GetAndUpdateShipmentStatus(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
-            shipmentstatus = ShipmentStatus.objects.filter(id=pk).first()
-            data=ShipmentStatusSerializer(shipmentstatus).data
+            shipment = get_object_or_404(Shipment, id=pk)
+            shipment_status = shipment.status
+            data = ShipmentStatusSerializer(shipment_status).data
             return response.Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
-        
         except Exception as e:
             logger.error(str(e))
             return response.Response({"status": "error", "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -81,16 +82,24 @@ class GetAndUpdateShipmentStatus(viewsets.ViewSet):
     def update(self, request, pk=None):
         new_status = request.query_params.get("new_status")
         
+        if not new_status:
+            return response.Response({"status": "error", "message": "New status not provided"}, status=status.HTTP_400_BAD_REQUEST)
+
         if not pk:
-            return JsonResponse({"status": "Error", "message": "Input Shipment ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return response.Response({"status": "error", "message": "Input Shipment ID"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Validate new status
+        valid_statuses = dict(ShipmentStatus.STATUS).keys()
+        if new_status not in valid_statuses:
+            return response.Response({"status": "error", "message": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Get related Shipment
-        shipment_instance = Shipment.objects.get(id=pk)
+        shipment_instance = get_object_or_404(Shipment, id=pk)
         
-        if not shipment_instance:
-            return JsonResponse({"status": "error", "message": "Shipment not found"}, status=status.HTTP_404_NOT_FOUND)
+        # Create a new ShipmentStatus instance
+        shipment_status = ShipmentStatus.objects.create(status=new_status)
         
-        shipment_status = ShipmentStatus.objects.filter(shipment=shipment_instance).first()
-        shipment_status.status = new_status
-        shipment_status.save()
+        # Update the many-to-many relationship
+        shipment_instance.status.add(shipment_status)
+        
         return response.Response({"status": "success", "message": "Status Updated Successfully", "data": ShipmentStatusSerializer(shipment_status).data}, status=status.HTTP_200_OK)
